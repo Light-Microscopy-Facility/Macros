@@ -1,0 +1,29 @@
+macro "BatchLUTify" {
+// This macro allows you to convert all TIFF images in a folder to a LUT from ImageJ's "luts" directory.
+// The "LUTified" images are stored in a directory of your choice with a prefix to the original filename stating the LUT used.
+// Author: Christian Liebig, Facility for Imaging by Light Microscopy, Imperial College, London
+
+
+      lut = "Grays";                                                           // the preset LUT is "Grays", using just a greyscale gradient
+      dir1 = getDirectory("Choose Source Directory ");                         //
+      dir2 = getDirectory("Choose Destination Directory for LUTified images"); //
+      Dialog.create("LUT");                                                    // create a dialogue box
+      Dialog.addString("Type in LUT:", lut);                                   // in the dialogue, you should type in your desired LUT from the LUTs in the ImageJ/luts directory
+      Dialog.show();                                                           // show the above created dialogue
+      lut = Dialog.getString();                                                // the chosen LUT is returned to the macro
+      list = getFileList(dir1);                                                // get the list of the filenames of the original images
+      setBatchMode(true);                                                      // do not show the images while processing them
+      for (i=0; i<list.length; i++) {                                          // work through the list of original image files
+          name = list[i];                                                      // get the filename of the currently processed image
+          showProgress(i+1, list.length);                                      // the progress is shown in the ImageJ window
+          if (endsWith(list[i], '.tif')){                                      // only TIFF files are processed
+             open(dir1+list[i]);                                               // open the image
+             run(lut);                                                         // apply the above defined LUT
+             run("RGB Color");                                                 // convert to 24-bit RGB color image
+             saveAs("tiff", dir2+lut+"_"+name);                                // save the processed image under the original name with a prefix derived from the LUT in the predefined folder
+             close();                                                          // close the image
+          }                                                                    // 
+          else {}                                                              // do not do anything with non-TIFF files
+      }                                                                        // go to the next file in the folder
+}                                                                              // end of macro
+
