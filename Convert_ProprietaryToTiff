@@ -1,0 +1,35 @@
+macro"Convert_ProprietaryToTiff" {
+
+
+    dir = getDirectory("Choose Source Directory ");                            // choose the directory with the files that should be converted
+    list = getFileList(dir);                                                   // reads the filenames of the chosen directory
+    //setBatchMode(true);                                                       // work on the images without displaying them
+    Dialog.create("Conversion settings");                                      // creates a dialogue that asks
+    Dialog.addCheckbox("Downsample to 8bit?", true);                           //     whether you want to downsample your images if they exceed 8bit bitdepth
+    Dialog.addCheckbox("Autoscale before downsampling?", true);                //     and whether images should be autoscaled before downsampling them
+    Dialog.show();                                                             // shows the above created dialogue
+    downsamp = Dialog.getCheckbox();                                           // fetches the downsampling choice
+    autosc = Dialog.getCheckbox();                                             // fetches the autoscaling choice
+    savedir = File.makeDirectory(dir+"converted/");                            // creates a directory for saving the converted images
+    for (i=0; i<list.length; i++) {                                            // starts the loop to process all images in the selected folder
+        
+        name = list[i];                                                        // get the filename of the currently processed image
+        issubdir = endsWith(name,"/");
+        if (issubdir==false) {
+            showProgress(i+1, list.length);                                    // the progress is shown in the ImageJ window
+            if (autosc) run("Bio-Formats Importer", "open='" + dir + name + "' autoscale color_mode=Grayscale view=Hyperstack stack_order=XYCZT");
+                                                                               // open an image with the BioFormats importer plugin with autoscaling
+                else run("Bio-Formats Importer", "open='" + dir + name + "' color_mode=Grayscale view=Hyperstack stack_order=XYCZT");
+                                                                               // open an image with the BioFormats importer plugin
+            imagebit = bitDepth();                                             // estimates the bitdepth of the currently active image
+            if (imagebit != 8) {                                               // if the bitdepth of the currently active image exceeds 8bit
+                if (downsamp) run("8-bit");                                    //     it gets downconverted to 8 bit if the option was checked in the dialogue
+                }
+            dotIndex = lastIndexOf(name, ".");                                 // this line and the following line remove
+            if (dotIndex!=-1) savename = substring(name, 0, dotIndex);         //    the file extension from the name of the source file 
+            run("Bio-Formats Exporter", "save='"+dir+"converted/"+savename+".tif'  compression=Uncompressed");
+                                                                               // save the image with the BioFormats exporter plugin
+            close();                                                           // close the active image
+		    }
+        }
+}                                                                              // end of macro
