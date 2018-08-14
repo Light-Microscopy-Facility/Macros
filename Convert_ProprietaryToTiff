@@ -1,5 +1,11 @@
 macro"Convert_ProprietaryToTiff" {
 
+// This macro converts proprietary image formats that can be opened via BioFormats to TIFF.
+// Images are stored as z-stacks in one file, channels and timepoints are stored separately.
+// Images can be downsampled to 8-bit if desired.
+// Author: Christian Liebig, Light Microscopy Facility, MPI for Developmental Biology
+// Use of ImageJ should be cited as: Schneider, C.A., Rasband, W.S., Eliceiri, K.W. "NIH Image to ImageJ: 25 years of image analysis". Nature Methods 9, 671-675, 2012.
+// Use of BioFormats plugin should be cited as: Linkert et al. 2010. Metadata matters: access to image data in the real world. J Cell Biol. 189:777-782. PMID: 20513764
 
     dir = getDirectory("Choose Source Directory ");                            // choose the directory with the files that should be converted
     list = getFileList(dir);                                                   // reads the filenames of the chosen directory
