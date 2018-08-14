@@ -1,0 +1,35 @@
+macro "CropTIFFSeriesToValues" {
+// This macro crops all the image files in a folder with a .tif extension to the values entered in an opening dialogue.
+// Author: Christian Liebig, Facility for Imaging by Light Microscopy, Imperial College, London
+    dir = getDirectory("Choose Directory ");       // choose the directory that contains your TIFF series
+    list = getFileList(dir);                       // reads the filenames of the chosen directory
+    setBatchMode(true);                            // work on the images without displaying them
+    left = 0;                                      // default value for the left margin of the selected region
+    upper = 0;                                     // default value for the upper margin of the selected region
+    width = 1;                                     // default value for the width of the selected region
+    height = 1;                                    // default value for the height of the selected region
+    Dialog.create("CropTIFFSeriesToValues");       // create a dialogue to change the default values for the region selection
+    Dialog.addNumber("Set left margin:", left);    // change the default value for the left margin of the selected region
+    Dialog.addNumber("Set upper margin:", upper);  // change the default value for the upper margin of the selected region
+    Dialog.addNumber("Set width:", width);         // change the default value for the width of the selected region
+    Dialog.addNumber("Set height:", height);       // change the default value for the height of the selected region
+    Dialog.show();                                 // show the above created dialogue
+    x = Dialog.getNumber();                        // get value for the left margin of the selection from the dialogue
+    y = Dialog.getNumber();                        // get value for the upper margin of the selection from the dialogue
+    w = Dialog.getNumber();                        // get value for the width of the selection from the dialogue
+    h = Dialog.getNumber();                        // get value for the height of the selection from the dialogue
+    for (i=0; i<list.length; i++) {                // go through the file list
+        if (endsWith(list[i], '.tif')) {           // only files with the .tif extension will be measured
+            open(dir+list[i]);                     // open an image file
+            name = list[i];                        // get the filename of the actual image
+            makeRectangle(x, y, w, h);             // make a rectangular selection with the predefined values
+            run("Crop");                           // crop the image to this selection
+            dotIndex = lastIndexOf(name, ".");     // this line and the following line I took from another macro but I do not know 
+            if (dotIndex!=-1)                      //    what they exactly do, they have something to do with the removing of the extension
+              name = substring(name, 0, dotIndex); // the file extension is removed to be able to add the suffix
+            saveAs("tiff", dir+name+"_X"+".tif");  // save the cropped image in the directory and under the name of the original image with an "_X" suffix
+            close();                               // close the image
+            }                                      // go on to the next image in the folder
+        else {}                                    // non-.tif files will be ignored
+    }                                              // go on to next file in the folder
+}                                                  // end of macro
