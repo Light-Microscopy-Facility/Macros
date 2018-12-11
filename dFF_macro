@@ -1,3 +1,11 @@
+macro "dFF_macro" {
+
+// this macro creates from a time series with n frames a series with n-1 frames where each frame of the original is subtracted from its following frame
+// it is useful for finding/ measuring movements within a time series
+// to make absolutely sure ImageJ doesn't get things mixed up, only run it with a single stack open at a time
+// author: Christian Feldhaus, Light Microscopy Facility, MPI for Developmental Biology, 2018
+// license: Creative Commons Attr. 4.0 Intl. CC-BY
+
 stac=getTitle();
 getDimensions(wid,hei,chan,slic,fram);
 framm=fram-1;
@@ -9,4 +17,4 @@ selectWindow(stac+"-2");close();
 selectWindow(stac+"-1");close();
 selectWindow("Result of "+stac+"-2");
 rename(stac+"-dFF");
-
+}
