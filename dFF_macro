@@ -1,0 +1,12 @@
+stac=getTitle();
+getDimensions(wid,hei,chan,slic,fram);
+framm=fram-1;
+run("Duplicate...", "duplicate frames=1-"+framm);
+selectWindow(stac);
+run("Duplicate...", "duplicate frames=2-"+fram);
+imageCalculator("Subtract create 32-bit stack", stac+"-2",stac+"-1");
+selectWindow(stac+"-2");close();
+selectWindow(stac+"-1");close();
+selectWindow("Result of "+stac+"-2");
+rename(stac+"-dFF");
+
