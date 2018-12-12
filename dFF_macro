@@ -4,7 +4,7 @@ macro "dFF_macro" {
 // it is useful for finding/ measuring movements within a time series
 // to make absolutely sure ImageJ doesn't get things mixed up, only run it with a single stack open at a time
 // author: Christian Feldhaus, Light Microscopy Facility, MPI for Developmental Biology, 2018
-// license: Creative Commons Attr. 4.0 Intl. CC-BY
+
 
 stac=getTitle();
 getDimensions(wid,hei,chan,slic,fram);
